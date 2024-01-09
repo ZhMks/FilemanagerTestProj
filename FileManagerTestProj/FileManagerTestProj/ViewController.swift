@@ -119,7 +119,6 @@ extension ViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let path = fileservice.getPath(at: indexPath.row)
-        let title = path.components(separatedBy: "/").last
         let fileService = FilemanagerService(pathForFolder: path)
         let nextVieController = ViewController(fileService: fileService)
         navigationController?.pushViewController(nextVieController, animated: true)
