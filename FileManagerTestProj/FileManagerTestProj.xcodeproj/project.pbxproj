@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9DBB3988426E523783DE33C2 /* Pods_FileManagerTestProj.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2F48B7ACA1C81BAC5A77F07 /* Pods_FileManagerTestProj.framework */; };
 		B2558A742B4A9C1E00D8A51C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2558A732B4A9C1E00D8A51C /* AppDelegate.swift */; };
 		B2558A762B4A9C1E00D8A51C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2558A752B4A9C1E00D8A51C /* SceneDelegate.swift */; };
 		B2558A782B4A9C1E00D8A51C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2558A772B4A9C1E00D8A51C /* ViewController.swift */; };
@@ -15,10 +14,10 @@
 		B2558A802B4A9C2000D8A51C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2558A7E2B4A9C2000D8A51C /* LaunchScreen.storyboard */; };
 		B2558A882B4BE95D00D8A51C /* FileManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2558A872B4BE95D00D8A51C /* FileManagerService.swift */; };
 		B2AD0C472B4D6BBA00AE46A9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2AD0C462B4D6BBA00AE46A9 /* LoginViewController.swift */; };
+		B2AD0C4C2B4EBDCA00AE46A9 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2AD0C4B2B4EBDCA00AE46A9 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4BE0C444C93E4E336631D5D9 /* Pods-FileManagerTestProj.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileManagerTestProj.debug.xcconfig"; path = "Target Support Files/Pods-FileManagerTestProj/Pods-FileManagerTestProj.debug.xcconfig"; sourceTree = "<group>"; };
 		B2558A702B4A9C1E00D8A51C /* FileManagerTestProj.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileManagerTestProj.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2558A732B4A9C1E00D8A51C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B2558A752B4A9C1E00D8A51C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -28,8 +27,7 @@
 		B2558A812B4A9C2000D8A51C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2558A872B4BE95D00D8A51C /* FileManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerService.swift; sourceTree = "<group>"; };
 		B2AD0C462B4D6BBA00AE46A9 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		CCE7686732DD639B079B3312 /* Pods-FileManagerTestProj.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileManagerTestProj.release.xcconfig"; path = "Target Support Files/Pods-FileManagerTestProj/Pods-FileManagerTestProj.release.xcconfig"; sourceTree = "<group>"; };
-		F2F48B7ACA1C81BAC5A77F07 /* Pods_FileManagerTestProj.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FileManagerTestProj.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2AD0C4B2B4EBDCA00AE46A9 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,38 +35,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9DBB3988426E523783DE33C2 /* Pods_FileManagerTestProj.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		57C94C24F66FA086DEEE7FFC /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F2F48B7ACA1C81BAC5A77F07 /* Pods_FileManagerTestProj.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		71A0D50CD1786A16ABF4A085 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				4BE0C444C93E4E336631D5D9 /* Pods-FileManagerTestProj.debug.xcconfig */,
-				CCE7686732DD639B079B3312 /* Pods-FileManagerTestProj.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		B2558A672B4A9C1E00D8A51C = {
 			isa = PBXGroup;
 			children = (
 				B2558A722B4A9C1E00D8A51C /* FileManagerTestProj */,
 				B2558A712B4A9C1E00D8A51C /* Products */,
-				71A0D50CD1786A16ABF4A085 /* Pods */,
-				57C94C24F66FA086DEEE7FFC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -87,6 +64,7 @@
 				B2558A752B4A9C1E00D8A51C /* SceneDelegate.swift */,
 				B2558A772B4A9C1E00D8A51C /* ViewController.swift */,
 				B2AD0C462B4D6BBA00AE46A9 /* LoginViewController.swift */,
+				B2AD0C4B2B4EBDCA00AE46A9 /* SettingsViewController.swift */,
 				B2558A872B4BE95D00D8A51C /* FileManagerService.swift */,
 				B2558A7C2B4A9C2000D8A51C /* Assets.xcassets */,
 				B2558A7E2B4A9C2000D8A51C /* LaunchScreen.storyboard */,
@@ -102,11 +80,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B2558A842B4A9C2000D8A51C /* Build configuration list for PBXNativeTarget "FileManagerTestProj" */;
 			buildPhases = (
-				3901157A7B4BF00BCB5DF2E3 /* [CP] Check Pods Manifest.lock */,
 				B2558A6C2B4A9C1E00D8A51C /* Sources */,
 				B2558A6D2B4A9C1E00D8A51C /* Frameworks */,
 				B2558A6E2B4A9C1E00D8A51C /* Resources */,
-				CCC4548C93E969FC66294E97 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -162,48 +138,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		3901157A7B4BF00BCB5DF2E3 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-FileManagerTestProj-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CCC4548C93E969FC66294E97 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FileManagerTestProj/Pods-FileManagerTestProj-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FileManagerTestProj/Pods-FileManagerTestProj-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FileManagerTestProj/Pods-FileManagerTestProj-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		B2558A6C2B4A9C1E00D8A51C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -214,6 +148,7 @@
 				B2558A762B4A9C1E00D8A51C /* SceneDelegate.swift in Sources */,
 				B2AD0C472B4D6BBA00AE46A9 /* LoginViewController.swift in Sources */,
 				B2558A882B4BE95D00D8A51C /* FileManagerService.swift in Sources */,
+				B2AD0C4C2B4EBDCA00AE46A9 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,7 +287,6 @@
 		};
 		B2558A852B4A9C2000D8A51C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4BE0C444C93E4E336631D5D9 /* Pods-FileManagerTestProj.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -384,7 +318,6 @@
 		};
 		B2558A862B4A9C2000D8A51C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CCE7686732DD639B079B3312 /* Pods-FileManagerTestProj.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -7,9 +7,15 @@
 
 import UIKit
 
+typealias Action = (([String]) -> Void)
+
 class ViewController: UIViewController, UINavigationControllerDelegate {
 
+    var action: Action?
+
     private let fileservice: FilemanagerService
+
+    private var itemsArray: [String]?
 
     private lazy var documentsTableView: UITableView = {
         let tableView = UITableView()
@@ -23,15 +29,26 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         self.fileservice = fileService
         super.init(nibName: nil, bundle: nil)
     }
-    
+
+    convenience init () {
+        let fileservice = FilemanagerService()
+        self.init(fileService: fileservice)
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         layout()
+        fileservice.fetchInfo()
+        itemsArray = fileservice.items
     }
 
     private func layout() {
@@ -65,6 +82,8 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
         let secondAction = UIAlertAction(title: "Create", style: .destructive) { [weak self] _ in
             self?.fileservice.createDirectory(name: (alert.textFields?.first?.text)!)
+            self?.fileservice.fetchInfo()
+            self?.itemsArray = self?.fileservice.items
             self?.documentsTableView.reloadData()
         }
 
@@ -93,13 +112,13 @@ extension ViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        fileservice.items.count
+        itemsArray!.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
         var content = cell.defaultContentConfiguration()
-        content.text = fileservice.items[indexPath.row]
+        content.text = itemsArray![indexPath.row]
         cell.accessoryType = fileservice.isDirectoryAtIndex(indexPath.row) ? .disclosureIndicator : .checkmark
         cell.contentConfiguration = content
         return cell
@@ -113,6 +132,8 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             fileservice.removeContent(at: indexPath.row)
+            fileservice.fetchInfo()
+            itemsArray = fileservice.items
             tableView.reloadData()
         }
     }
@@ -127,15 +148,28 @@ extension ViewController: UITableViewDelegate {
 
 
 extension ViewController: UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
-            let fileName = url.lastPathComponent
-            let fileType = url.pathExtension
-            fileservice.createFile(name: fileName, content: fileType)
-            self.documentsTableView.reloadData()
-            }
 
-            dismiss(animated: true, completion: nil)
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+        var fileName = ""
+        if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
+            fileName = url.lastPathComponent
+        }
+
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            let imageJpegData = image.jpegData(compressionQuality: 1.0)
+            fileservice.createFile(name: fileName, content: imageJpegData!)
+            fileservice.fetchInfo()
+            self.itemsArray = fileservice.items
+            self.documentsTableView.reloadData()
+          } else {
+              let uiAlert = UIAlertController(title: "Ошибка сохранения", message: "Не удалось сохранить изображение", preferredStyle: .alert)
+              let action = UIAlertAction(title: "Cancel", style: .cancel)
+              uiAlert.addAction(action)
+              self.navigationController?.present(uiAlert, animated: true)
+          }
+
+        dismiss(animated: true, completion: nil)
     }
 }
 

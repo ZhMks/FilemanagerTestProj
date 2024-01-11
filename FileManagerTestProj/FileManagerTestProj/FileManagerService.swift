@@ -11,7 +11,7 @@ import Foundation
 protocol FileManagerServiceProtocol {
 
     func createDirectory(name: String)
-    func createFile(name: String, content: String)
+    func createFile(name: String, content: Data)
     func removeContent(at index: Int)
     func isDirectoryAtIndex(_ index: Int) -> Bool
     func getPath(at index: Int) -> String
@@ -20,10 +20,7 @@ protocol FileManagerServiceProtocol {
 
 class FilemanagerService: FileManagerServiceProtocol {
 
-    var items: [String] {
-        (try? FileManager.default.contentsOfDirectory(atPath: pathForFolder)) ?? []
-    }
-
+    var items: [String]?
     let pathForFolder: String
 
     init() {
@@ -42,32 +39,53 @@ class FilemanagerService: FileManagerServiceProtocol {
             print(error.localizedDescription)
         }
     }
-    
-    func createFile(name: String, content: String) {
-        let pathToSave = pathForFolder + "/" + name
-        FileManager.default.createFile(atPath: pathToSave, contents: content.data(using: .utf8))
 
-    }
-    
-    func removeContent(at index: Int) {
-        let path = pathForFolder + "/" + items[index]
+    func fetchInfo() {
         do {
-            try FileManager.default.removeItem(atPath: path)
+            let retrivedArray =  try FileManager.default.contentsOfDirectory(atPath: pathForFolder)
+            items = retrivedArray
+
+        } catch {
+            items = []
+        }
+    }
+
+    func createFile(name: String, content: Data) {
+        let pathToSave = URL(filePath: pathForFolder + "/" + name)
+        do {
+            try content.write(to: pathToSave)
         } catch {
             print(error.localizedDescription)
         }
     }
 
+    func removeContent(at index: Int) {
+        if let items = items {
+            let path = pathForFolder + "/" + items[index]
+            do {
+                try FileManager.default.removeItem(atPath: path)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+
     func getPath(at index: Int) -> String {
-          pathForFolder + "/" + items[index]
+        if let items = items {
+            return pathForFolder + "/" + items[index]
+        }
+        return ""
     }
 
     func isDirectoryAtIndex(_ index: Int) -> Bool {
-        let item = items[index]
-        let path = pathForFolder + "/" + item
-        var objcBool: ObjCBool = false
-        FileManager.default.fileExists(atPath: path, isDirectory: &objcBool)
-        return objcBool.boolValue
+        if let items = items {
+            let item = items[index]
+            let path = pathForFolder + "/" + item
+            var objcBool: ObjCBool = false
+            FileManager.default.fileExists(atPath: path, isDirectory: &objcBool)
+            return objcBool.boolValue
+        }
+        return false
     }
 
 }

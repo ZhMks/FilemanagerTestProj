@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import FDKeychain
+
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -18,10 +18,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        
         let window = UIWindow(windowScene: windowScene)
-        let fileservice = FilemanagerService()
-        let controller = ViewController(fileService: fileservice)
-        window.rootViewController = UINavigationController(rootViewController: controller)
+
+        var state: State = .doesntSavePassword
+        if let storedEnumValue = UserDefaults.standard.string(forKey: "state"),
+           let storedState = State(rawValue: storedEnumValue) {
+            state = storedState
+        }
+
+        let vc = LoginViewController(state: state)
+        window.rootViewController = UINavigationController(rootViewController: vc)
         window.makeKeyAndVisible()
         self.window = window
     }
@@ -54,6 +61,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    func changeRootViewController(_ vc: UIViewController) {
+        guard let window = self.window else {
+            return
+        }
+        window.rootViewController = vc
+    }
 }
 
