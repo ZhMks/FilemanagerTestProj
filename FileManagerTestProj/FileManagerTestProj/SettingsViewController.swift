@@ -179,13 +179,29 @@ final class SettingsViewController: UIViewController {
         }
         let createAction = UIAlertAction(title: "Обновить", style: .destructive) { [weak self] action in
             guard let self else { return }
-            keyChain["newUser"] = alert.textFields?.first?.text!
-            dismiss(animated: true)
+            if validate(pass: (alert.textFields?.first?.text)!) {
+                let secondAlert = UIAlertController(title: "Невозможно создать", message: "Минимальное кол-во символов - 4", preferredStyle: .alert)
+                let secondAction = UIAlertAction(title: "Отмена", style: .destructive)
+                secondAlert.addAction(secondAction)
+                present(secondAlert, animated: true)
+            } else {
+                do {
+                    try keyChain.set((alert.textFields?.first?.text)!, key: "newUser")
+                    dismiss(animated: true)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
         }
         let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
         alert.addAction(createAction)
         alert.addAction(cancelAction)
         present(alert, animated: true)
+    }
+
+    func validate(pass: String) -> Bool {
+        let minimumNumberOFchcarcters = 4
+       return  pass.count < minimumNumberOFchcarcters ?  true : false
     }
 
 }

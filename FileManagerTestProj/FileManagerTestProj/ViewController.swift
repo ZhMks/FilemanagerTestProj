@@ -70,6 +70,10 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
     private func initialFetch() {
 
+        if fileservice.items.isEmpty {
+            itemsArray = []
+        }
+
         guard let sortedValue = UserDefaults.standard.value(forKey: "sorted") as? String else { return }
 
         switch sortedValue {
@@ -86,7 +90,6 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         default: break
         }
     }
-
 
 
     @objc func folderButtonTapped() {
@@ -142,9 +145,9 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
         var content = cell.defaultContentConfiguration()
-        content.text = itemsArray![indexPath.row]
-        cell.accessoryType = fileservice.isDirectoryAtIndex(indexPath.row) ? .disclosureIndicator : .checkmark
-        cell.contentConfiguration = content
+            content.text = itemsArray![indexPath.row]
+            cell.accessoryType = fileservice.isDirectoryAtIndex(indexPath.row) ? .disclosureIndicator : .checkmark
+            cell.contentConfiguration = content
         return cell
     }
 
