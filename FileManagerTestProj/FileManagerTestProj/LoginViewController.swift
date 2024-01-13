@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import KeychainAccess
 
 enum State: String {
     case haveSavedPassword
@@ -14,6 +15,8 @@ enum State: String {
 
 
 final class LoginViewController: UIViewController {
+
+    private var keyChain: Keychain = Keychain()
 
     private var state: State
 
@@ -90,6 +93,7 @@ final class LoginViewController: UIViewController {
     }
 
     private func createNavigation() -> [UINavigationController] {
+        
         let fileService = FilemanagerService()
         let documentsVC = ViewController(fileService: fileService)
         let documentsNavigationVC = UINavigationController(rootViewController: documentsVC)
@@ -111,7 +115,7 @@ final class LoginViewController: UIViewController {
     private func validate(pass: String) -> Bool {
         let minimumNumberOfChar = 4
         if pass.count < minimumNumberOfChar {
-            passTextField.layer.backgroundColor = UIColor(named: "red")?.cgColor
+            passTextField.layer.borderColor = UIColor.red.cgColor
             infoText.text = "Минимальное кол-во символов: 4"
             return false
         }
@@ -131,16 +135,19 @@ final class LoginViewController: UIViewController {
     @objc func loginButtonTapped() {
         switch state {
         case .haveSavedPassword:
-            moveToTabBar()
+            let token = keyChain["newUser"]
+            if validate(pass: passTextField.text!) && passTextField.text == token {
+                moveToTabBar()
+            }
         case .doesntSavePassword:
             if validate(pass: passTextField.text!) {
                 cleanView()
                 loginButton.setTitle("Повторите пароль", for: .normal)
 
-                if savedPass == passTextField.text && validate(pass: savedPass!) {
+                if savedPass == passTextField.text && validate(pass: passTextField.text!) {
+                    keyChain["newUser"] = passTextField.text!
                     state = .haveSavedPassword
                     UserDefaults.standard.set(state.rawValue, forKey: "state")
-                    moveToTabBar()
                 }
             }
         }
