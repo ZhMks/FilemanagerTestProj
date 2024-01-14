@@ -74,14 +74,14 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         guard let sortedValue = UserDefaults.standard.value(forKey: "sorted") as? String else { return }
 
         switch sortedValue {
-        case "sortedUpper":
-            fileservice.fetchData()
-            fileservice.sort(by: "<")
-            itemsArray = fileservice.items
-            documentsTableView.reloadData()
         case "soertedLower":
             fileservice.fetchData()
-            fileservice.sort(by: ">")
+            fileservice.sort(by: .soertedLower)
+            itemsArray = fileservice.items
+            documentsTableView.reloadData()
+        case "sortedUpper":
+            fileservice.fetchData()
+            fileservice.sort(by: .sortedUpper)
             itemsArray = fileservice.items
             documentsTableView.reloadData()
         case "notSorted":

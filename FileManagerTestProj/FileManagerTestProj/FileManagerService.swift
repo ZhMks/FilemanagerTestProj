@@ -66,16 +66,19 @@ class FilemanagerService: FileManagerServiceProtocol {
         }
     }
 
-    func sort(by: Character) {
-        if by == ">" {
+    func sort(by: Sorting) {
+        switch by {
+        case .notSorted:
+            break
+        case .sortedUpper:
             do {
-                items = try FileManager.default.contentsOfDirectory(atPath: pathForFolder).sorted(by: >)
+                items = try FileManager.default.contentsOfDirectory(atPath: pathForFolder).sorted(by: <)
             } catch {
                 items = []
             }
-        } else if by == "<" {
+        case .soertedLower:
             do {
-                items = try FileManager.default.contentsOfDirectory(atPath: pathForFolder).sorted(by: <)
+                items = try FileManager.default.contentsOfDirectory(atPath: pathForFolder).sorted(by: >)
             } catch {
                 items = []
             }
@@ -88,15 +91,15 @@ class FilemanagerService: FileManagerServiceProtocol {
     }
 
     func getPath(at index: Int) -> String {
-            return pathForFolder + "/" + items[index]
+        return pathForFolder + "/" + items[index]
     }
 
     func isDirectoryAtIndex(_ index: Int) -> Bool {
-            let item = items[index]
-            let path = pathForFolder + "/" + item
-            var objcBool: ObjCBool = false
-            FileManager.default.fileExists(atPath: path, isDirectory: &objcBool)
-            return objcBool.boolValue
+        let item = items[index]
+        let path = pathForFolder + "/" + item
+        var objcBool: ObjCBool = false
+        FileManager.default.fileExists(atPath: path, isDirectory: &objcBool)
+        return objcBool.boolValue
     }
 
 }
