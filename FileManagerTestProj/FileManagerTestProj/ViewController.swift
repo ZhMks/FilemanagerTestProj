@@ -33,6 +33,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        updateArray()
         initialFetch()
     }
 
@@ -70,18 +71,16 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
     private func initialFetch() {
 
-        if fileservice.items.isEmpty {
-            itemsArray = []
-        }
-
         guard let sortedValue = UserDefaults.standard.value(forKey: "sorted") as? String else { return }
 
         switch sortedValue {
         case "sortedUpper":
+            fileservice.fetchData()
             fileservice.sort(by: "<")
             itemsArray = fileservice.items
             documentsTableView.reloadData()
         case "soertedLower":
+            fileservice.fetchData()
             fileservice.sort(by: ">")
             itemsArray = fileservice.items
             documentsTableView.reloadData()
@@ -124,6 +123,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         imagePicker.delegate = self
         imagePicker.modalPresentationStyle = .popover
         self.present(imagePicker, animated: true)
+    }
+
+    private func updateArray() {
+        fileservice.fetchData()
+        itemsArray = fileservice.items
     }
 
 }
