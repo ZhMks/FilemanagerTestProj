@@ -104,11 +104,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
 
         let secondAction = UIAlertAction(title: "Create", style: .destructive) { [weak self] _ in
             guard let self else { return }
-            fileservice.createDirectory(name: (alert.textFields?.first?.text)!)
-            fileservice.fetchData()
-            initialFetch()
-            itemsArray = fileservice.items
-            documentsTableView.reloadData()
+            self.fileservice.createDirectory(name: (alert.textFields?.first?.text)!)
+            self.fileservice.fetchData()
+            self.initialFetch()
+            self.itemsArray = fileservice.items
+            self.documentsTableView.reloadData()
         }
 
         secondAction.titleTextColor = UIColor(red: 0/255, green: 0/255, blue: 139/255, alpha: 0.7)
