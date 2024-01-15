@@ -21,13 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
 
-        var state: State = .doesntSavePassword
-        if let storedEnumValue = UserDefaults.standard.string(forKey: "state"),
-           let storedState = State(rawValue: storedEnumValue) {
-            state = storedState
-        }
-
-        let vc = LoginViewController(state: state)
+        let vc = LoginViewController()
         window.rootViewController = UINavigationController(rootViewController: vc)
         window.makeKeyAndVisible()
         self.window = window

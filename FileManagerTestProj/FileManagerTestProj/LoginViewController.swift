@@ -6,16 +6,12 @@
 //
 
 import UIKit
-
-enum State: String {
-    case haveSavedPassword
-    case doesntSavePassword
-}
+import KeychainAccess
 
 
 final class LoginViewController: UIViewController {
 
-    private var state: State
+    private let keyChain: Keychain = Keychain()
 
     private var savedPass: String?
 
@@ -28,7 +24,9 @@ final class LoginViewController: UIViewController {
 
     private lazy var passTextField: UITextField = {
         let passTextField = UITextField()
-        passTextField.borderStyle = .roundedRect
+        passTextField.layer.borderWidth = 0.5
+        passTextField.layer.borderColor = UIColor.black.cgColor
+        passTextField.layer.cornerRadius = 8.0
         passTextField.delegate = self
         passTextField.placeholder = "Enter Password"
         passTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -44,15 +42,6 @@ final class LoginViewController: UIViewController {
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         return loginButton
     }()
-
-    init(state: State) {
-        self.state = state
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,12 +73,8 @@ final class LoginViewController: UIViewController {
         ])
     }
 
-    private func cleanView() {
-        infoText.text = ""
-        passTextField.layer.borderColor = UIColor(named: "black")?.cgColor
-    }
-
     private func createNavigation() -> [UINavigationController] {
+
         let fileService = FilemanagerService()
         let documentsVC = ViewController(fileService: fileService)
         let documentsNavigationVC = UINavigationController(rootViewController: documentsVC)
@@ -110,44 +95,79 @@ final class LoginViewController: UIViewController {
 
     private func validate(pass: String) -> Bool {
         let minimumNumberOfChar = 4
+
         if pass.count < minimumNumberOfChar {
-            passTextField.layer.backgroundColor = UIColor(named: "red")?.cgColor
-            infoText.text = "Минимальное кол-во символов: 4"
+            passTextField.layer.borderColor = UIColor.red.cgColor
+            infoText.text = "Minimum number of characters: 4"
+            infoText.isHidden = false
             return false
         }
         savedPass = pass
         return true
     }
 
+    private func validateSavedPass(_ string: String) -> Bool {
+        do {
+            if let token = try keyChain.get("newUser") {
+                if token == string {
+                    return true
+                }
+            } else {
+                guard let savedPass = savedPass else {
+                    if validate(pass: string) {
+                        loginButton.setTitle("Повторите пароль", for: .normal)
+                        passTextField.text = ""
+                        passTextField.layer.borderColor = UIColor.black.cgColor
+                        infoText.text = ""
+                    }
+                    return false
+                }
+                if savedPass == string {
+                   try? keyChain.set(string, key: "newUser")
+                    return true
+                }
+                infoText.text = "Пароли не совпадают"
+                passTextField.layer.borderColor = UIColor.red.cgColor
+                return false
+            }
+            infoText.text = "Неверный пароль"
+            passTextField.layer.borderColor = UIColor.red.cgColor
+            return false
+        } catch {
+            assertionFailure("Cannot get token")
+            return false
+        }
+    }
+
+    private func saveKeychain(string: String) {
+        do {
+            try keyChain.set(string, key: "newUser")
+        } catch {
+            assertionFailure("Cannot save password for user")
+        }
+    }
+
     private func checkButton() {
-        switch state {
-        case .haveSavedPassword:
-            loginButton.setTitle("Введите пароль", for: .normal)
-        case .doesntSavePassword:
-            loginButton.setTitle("Создать пароль", for: .normal)
+        do {
+            if let _ = try keyChain.get("newUser") {
+                loginButton.setTitle("Введите пароль", for: .normal)
+            } else {
+                loginButton.setTitle("Создать пароль", for: .normal)
+            }
+        } catch {
+            print(error.localizedDescription)
         }
     }
 
     @objc func loginButtonTapped() {
-        switch state {
-        case .haveSavedPassword:
+        if validateSavedPass(passTextField.text!) {
             moveToTabBar()
-        case .doesntSavePassword:
-            if validate(pass: passTextField.text!) {
-                cleanView()
-                loginButton.setTitle("Повторите пароль", for: .normal)
-
-                if savedPass == passTextField.text && validate(pass: savedPass!) {
-                    state = .haveSavedPassword
-                    UserDefaults.standard.set(state.rawValue, forKey: "state")
-                    moveToTabBar()
-                }
-            }
         }
     }
 }
 
 extension LoginViewController: UITextFieldDelegate {
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
     }
