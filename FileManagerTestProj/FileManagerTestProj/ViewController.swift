@@ -7,17 +7,14 @@
 
 import UIKit
 
-typealias Action = (([String]) -> Void)
-
 class ViewController: UIViewController, UINavigationControllerDelegate {
 
-    var action: Action?
+    var action: (([String]) -> Void)?
 
     private let fileservice: FilemanagerService
+    var itemsArray: [String]?
 
-    private var itemsArray: [String]?
-
-    private lazy var documentsTableView: UITableView = {
+    lazy var documentsTableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
@@ -30,25 +27,20 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         super.init(nibName: nil, bundle: nil)
     }
 
-    convenience init () {
-        let fileservice = FilemanagerService()
-        self.init(fileService: fileservice)
-    }
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        updateArray()
+        initialFetch()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         layout()
-        fileservice.fetchInfo()
-        itemsArray = fileservice.items
     }
 
     private func layout() {
@@ -70,6 +62,35 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         navigationItem.rightBarButtonItems = [secondRightItem, firstRightItem]
     }
 
+    private func updateView() {
+        action = { [weak self] sortedArray in
+            self?.itemsArray = sortedArray
+            self?.documentsTableView.reloadData()
+        }
+    }
+
+    private func initialFetch() {
+
+        guard let sortedValue = UserDefaults.standard.value(forKey: "sorted") as? String else { return }
+
+        switch sortedValue {
+        case "soertedLower":
+            fileservice.fetchData()
+            fileservice.sort(by: .soertedLower)
+            itemsArray = fileservice.items
+            documentsTableView.reloadData()
+        case "sortedUpper":
+            fileservice.fetchData()
+            fileservice.sort(by: .sortedUpper)
+            itemsArray = fileservice.items
+            documentsTableView.reloadData()
+        case "notSorted":
+            break
+        default: break
+        }
+    }
+
+
     @objc func folderButtonTapped() {
 
         let alert = UIAlertController(title: "Create new Folder", message: "Please enter name", preferredStyle: .alert)
@@ -81,10 +102,12 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         action.titleTextColor = UIColor(red: 0/255, green: 0/255, blue: 139/255, alpha: 1)
 
         let secondAction = UIAlertAction(title: "Create", style: .destructive) { [weak self] _ in
-            self?.fileservice.createDirectory(name: (alert.textFields?.first?.text)!)
-            self?.fileservice.fetchInfo()
-            self?.itemsArray = self?.fileservice.items
-            self?.documentsTableView.reloadData()
+            guard let self else { return }
+            self.fileservice.createDirectory(name: (alert.textFields?.first?.text)!)
+            self.fileservice.fetchData()
+            self.initialFetch()
+            self.itemsArray = fileservice.items
+            self.documentsTableView.reloadData()
         }
 
         secondAction.titleTextColor = UIColor(red: 0/255, green: 0/255, blue: 139/255, alpha: 0.7)
@@ -102,6 +125,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate {
         self.present(imagePicker, animated: true)
     }
 
+    private func updateArray() {
+        fileservice.fetchData()
+        itemsArray = fileservice.items
+    }
+
 }
 
 extension ViewController: UITableViewDataSource {
@@ -112,15 +140,18 @@ extension ViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        itemsArray!.count
+        if let items = itemsArray {
+            return items.count
+        }
+        return 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
         var content = cell.defaultContentConfiguration()
-        content.text = itemsArray![indexPath.row]
-        cell.accessoryType = fileservice.isDirectoryAtIndex(indexPath.row) ? .disclosureIndicator : .checkmark
-        cell.contentConfiguration = content
+            content.text = itemsArray![indexPath.row]
+            cell.accessoryType = fileservice.isDirectoryAtIndex(indexPath.row) ? .disclosureIndicator : .checkmark
+            cell.contentConfiguration = content
         return cell
     }
 
@@ -132,17 +163,21 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             fileservice.removeContent(at: indexPath.row)
-            fileservice.fetchInfo()
+            fileservice.fetchData()
+            initialFetch()
             itemsArray = fileservice.items
             tableView.reloadData()
         }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let path = fileservice.getPath(at: indexPath.row)
-        let fileService = FilemanagerService(pathForFolder: path)
-        let nextVieController = ViewController(fileService: fileService)
-        navigationController?.pushViewController(nextVieController, animated: true)
+        if fileservice.isDirectoryAtIndex(indexPath.row) {
+            let path = fileservice.getPath(at: indexPath.row)
+            let fileService = FilemanagerService(pathForFolder: path)
+            let nextVieController = ViewController(fileService: fileService)
+            navigationController?.pushViewController(nextVieController, animated: true)
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
@@ -159,8 +194,9 @@ extension ViewController: UIImagePickerControllerDelegate {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             let imageJpegData = image.jpegData(compressionQuality: 1.0)
             fileservice.createFile(name: fileName, content: imageJpegData!)
-            fileservice.fetchInfo()
-            self.itemsArray = fileservice.items
+            fileservice.fetchData()
+            initialFetch()
+            itemsArray = fileservice.items
             self.documentsTableView.reloadData()
           } else {
               let uiAlert = UIAlertController(title: "Ошибка сохранения", message: "Не удалось сохранить изображение", preferredStyle: .alert)
@@ -183,5 +219,4 @@ private extension UIAlertAction {
     }
 
 }
-
 
